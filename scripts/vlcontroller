@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+### BEGIN INIT INFO
+# Provides:          vlcontroller
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Displays videos in a directory in a loop using omxplayer
+### END INIT INFO
+
+set -e
+
+VLSCRIPT="/home/pi/videoloop.sh"
+SESSION="videoloop"
+
+is_running() {
+  sudo screen -list | grep -q "[[:space:]]${SESSION}[[:space:]]"
+}
+
+start_loop() {
+  if is_running; then
+    echo "Videoloop is already running"
+  else
+    sudo screen -d -m -S "$SESSION" sh -c "$VLSCRIPT"
+    echo "Videoloop Started"
+  fi
+}
+
+stop_loop() {
+  if is_running; then
+    sudo screen -S "$SESSION" -X quit
+    echo "Videoloop Stopped"
+  else
+    echo "Videoloop is Not Running"
+  fi
+}
+
+check_loop() {
+  if is_running; then
+    echo "Videoloop is Running"
+  else
+    echo "Videoloop is Not Running"
+  fi
+}
+
+repair_loop() {
+  if ! is_running; then
+    sudo screen -d -m -S "$SESSION" sh -c "$VLSCRIPT"
+    echo "Videoloop Restarted"
+  else
+    echo "Videoloop is Running"
+  fi
+}
+
+case "${1:-}" in
+  start)  start_loop ;;
+  stop)   stop_loop ;;
+  check)  check_loop ;;
+  repair) repair_loop ;;
+  *)
+    echo "Usage: /etc/init.d/vlcontroller {start|stop|check|repair}"
+    exit 1
+    ;;
+esac
