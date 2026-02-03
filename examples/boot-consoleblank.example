@@ -1,1 +1,3 @@
+# In /boot/cmdline.txt append:
+consoleblank=10
 
