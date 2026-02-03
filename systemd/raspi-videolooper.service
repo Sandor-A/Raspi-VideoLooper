@@ -1,0 +1,16 @@
+[Unit]
+Description=Raspi Videolooper (omxplayer directory loop)
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/raspi-videolooper/videoloop.sh
+Restart=always
+RestartSec=2
+User=pi
+WorkingDirectory=/home/pi
+
+# If you want HDMI always on, you may need extra config depending on your Pi/OS.
+
+[Install]
+WantedBy=multi-user.target
