@@ -1,0 +1,8 @@
+# Stop loop at 9PM
+0 21 * * * /etc/init.d/vlcontroller stop
+
+# Reboot at 8AM (boot starts loop again)
+0 8 * * * sudo reboot
+
+# Every 5 minutes during open hours, restart loop if it stopped
+*/5 8-20 * * * /etc/init.d/vlcontroller repair
